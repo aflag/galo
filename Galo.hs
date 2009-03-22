@@ -1,4 +1,4 @@
-module Main (show3Dvec, main) where
+module Galo (show3Dvec) where
 {-  Copyright (c) 2009, Rafael Cunha de Almeida <almeidaraf@gmail.com>
  -
  - Permission to use, copy, modify, and/or distribute this software for any
@@ -38,12 +38,12 @@ show3Dvec f range = do
 
     displayCallback $= display (map f range) rotX rotY pos
 
-    idleCallback $= Just idle
+    --idleCallback $= Just idle
 
     keyboardMouseCallback $= Just (keyboardMouse rotX rotY pos)
+    actionOnWindowClose $= MainLoopReturns
 
     mainLoop
 
-main = show3Dvec (\t -> (t, t, 0)) [-1.0,-0.99 .. 1.0]
+--show3Dvec (\t -> (t, t, 0)) [-1.0,-0.99 .. 1.0]
 --show3Dvec (\t -> (t**3, log (3 - t), sqrt t)) [-1.0,-0.99 .. 1.0]
-
