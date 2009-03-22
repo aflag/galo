@@ -1,4 +1,4 @@
-module Main (show3Dvec) where
+module Main (show3Dvec, main) where
 {-  Copyright (c) 2009, Rafael Cunha de Almeida <almeidaraf@gmail.com>
  -
  - Permission to use, copy, modify, and/or distribute this software for any
@@ -19,6 +19,7 @@ import Graphics.UI.GLUT
 import Data.IORef
 import Display
 import UserInput
+import Control.Concurrent
 
 
 show3Dvec :: (Double -> (Double, Double, Double)) -> [Double] -> IO ()
@@ -28,6 +29,8 @@ show3Dvec f range = do
     initialDisplayMode $= [DoubleBuffered]
 
     createWindow "Galo - 3D vec"
+
+    windowSize $= Size 800 600
 
     rotX <- newIORef (0.0::GLfloat)
     rotY <- newIORef (0.0::GLfloat)
@@ -41,4 +44,6 @@ show3Dvec f range = do
 
     mainLoop
 
-main = show3Dvec (\t -> (t, t, 0)) [0.0,0.01 .. 1.0]
+main = show3Dvec (\t -> (t, t, 0)) [-1.0,-0.99 .. 1.0]
+--show3Dvec (\t -> (t**3, log (3 - t), sqrt t)) [-1.0,-0.99 .. 1.0]
+

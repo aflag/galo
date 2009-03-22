@@ -19,6 +19,18 @@ import Graphics.UI.GLUT
 
 idle = postRedisplay Nothing
 
+drawAxis = do
+    renderPrimitive Lines $ do
+        color $ Color3 1 0 (0::GLfloat)
+        vertex $ Vertex3 (-99999.0) 0 (0::GLfloat)
+        vertex $ Vertex3 (99999.0) 0 (0::GLfloat)
+        color $ Color3 0 1 (0::GLfloat)
+        vertex $ Vertex3 0 (-99999.0) (0::GLfloat)
+        vertex $ Vertex3 0 (99999.0) (0::GLfloat)
+        color $ Color3 0 0 (1::GLfloat)
+        vertex $ Vertex3 (0::GLfloat) 0 (-99999.0)
+        vertex $ Vertex3 (0::GLfloat) 0 (99999.0)
+        color $ Color3 1 1 (1::GLfloat)
 {- This function is responsible for the creation of the display matrix. As I
  - understand OpenGL, it's all about displaying a matrix. There's several
  - oprations you can do with it. The operations happen sequencially following
@@ -49,6 +61,8 @@ display points rotX rotY pos = do
     translate $ Vector3 x y z
 
     mapM_ point points
+
+    drawAxis
 
     swapBuffers
 
