@@ -1,4 +1,4 @@
-module Galo (show3Dvec) where
+module Galo (show3Dvec, show3Dvec') where
 {-  Copyright (c) 2009, Rafael Cunha de Almeida <almeidaraf@gmail.com>
  -
  - Permission to use, copy, modify, and/or distribute this software for any
@@ -18,9 +18,11 @@ import Graphics.UI.GLUT
 
 import MainIO
 
-
 show3Dvec :: (Double -> (Double, Double, Double)) -> [Double] -> IO ()
-show3Dvec f range = do
+show3Dvec = show3Dvec' (return ())
+
+show3Dvec' :: IO () -> (Double -> (Double, Double, Double)) -> [Double] -> IO ()
+show3Dvec' userConfig f range = do
     (progname,_) <- getArgsAndInitialize
 
     initialDisplayMode $= [DoubleBuffered]
@@ -31,11 +33,15 @@ show3Dvec f range = do
 
     clearColor $= Color4 0.5 0.6 (1.0::GLfloat) 0
 
+    lineWidth $= 2
+
     (display, keyboardMouse) <- initIO
     displayCallback $= display (map f range)
     keyboardMouseCallback $= Just keyboardMouse
 
     actionOnWindowClose $= MainLoopReturns
+
+    userConfig
 
     mainLoop
 
