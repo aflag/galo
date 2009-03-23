@@ -35,12 +35,13 @@ show3Dvec f range = do
     rotX <- newIORef (0.0::GLfloat)
     rotY <- newIORef (0.0::GLfloat)
     pos <- newIORef (0.0::GLfloat, 0.0, 0.0)
+    zoom <- newIORef (1.0::GLfloat)
 
-    displayCallback $= display (map f range) rotX rotY pos
+    clearColor $= Color4 0.5 0.6 (1.0::GLfloat) 0
 
-    --idleCallback $= Just idle
+    displayCallback $= display (map f range) rotX rotY pos zoom
 
-    keyboardMouseCallback $= Just (keyboardMouse rotX rotY pos)
+    keyboardMouseCallback $= Just (keyboardMouse rotX rotY pos zoom)
     actionOnWindowClose $= MainLoopReturns
 
     mainLoop

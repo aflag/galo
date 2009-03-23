@@ -22,50 +22,63 @@ rotationConst :: GLfloat
 rotationConst = 2.5
 moveConst :: GLfloat
 moveConst = 0.02
+zoomConst :: GLfloat
+zoomConst = 0.01
 
 -- x-axis rotation
-keyboard rotX _ _ (Char 'z') Down = do
-    x <- get rotX
-    rotX $= x - rotationConst
-keyboard rotX _ _ (Char 'a') Down = do
+keyboard rotX _ _ _ (Char 'z') Down = do
     x <- get rotX
     rotX $= x + rotationConst
+keyboard rotX _ _ _ (Char 'a') Down = do
+    x <- get rotX
+    rotX $= x - rotationConst
 -- y-axis rotation
-keyboard _ rotY _ (Char 'q') Down = do
-    y <- get rotY
-    rotY $= y - rotationConst
-keyboard _ rotY _ (Char 'w') Down = do
+keyboard _ rotY _ _ (Char 'q') Down = do
     y <- get rotY
     rotY $= y + rotationConst
+keyboard _ rotY _ _ (Char 'w') Down = do
+    y <- get rotY
+    rotY $= y - rotationConst
 -- x-axis to the right
-keyboard _ _ pos (Char 'l') Down = do
+keyboard _ _ pos _ (Char 'l') Down = do
     (x, y, z) <- get pos
     pos $= (x-moveConst, y, z)
 -- x-axis to the left
-keyboard _ _ pos (Char 'h') Down = do
+keyboard _ _ pos _ (Char 'h') Down = do
     (x, y, z) <- get pos
     pos $= (x+moveConst, y, z)
 -- y-axis to the up
-keyboard _ _ pos (Char 'k') Down = do
+keyboard _ _ pos _ (Char 'k') Down = do
     (x, y, z) <- get pos
     pos $= (x, y-moveConst, z)
 -- y-axis to the down
-keyboard _ _ pos (Char 'j') Down = do
+keyboard _ _ pos _ (Char 'j') Down = do
     (x, y, z) <- get pos
     pos $= (x, y+moveConst, z)
 -- z-axis to the front
-keyboard _ _ pos (Char 'f') Down = do
+keyboard _ _ pos _ (Char 'f') Down = do
     (x, y, z) <- get pos
     pos $= (x, y, z-moveConst)
 -- z-axis to the back
-keyboard _ _ pos (Char 'd') Down = do
+keyboard _ _ pos _ (Char 'd') Down = do
     (x, y, z) <- get pos
     pos $= (x, y, z+moveConst)
-keyboard _ _ _ _ _ = return ()
+-- zoom in
+keyboard _ _ _ zoom (Char 'v') Down = do
+    z <- get zoom
+    zoom $= z + zoomConst
+-- zoom out
+keyboard _ _ _ zoom (Char 'c') Down = do
+    z <- get zoom
+    let z' = z - zoomConst in
+        if z' <= 0
+            then zoom $= 0
+            else zoom $= z'
+keyboard _ _ _ _ _ _ = return ()
 
-{-                mine                opengl          -
- -              ____|____     ___________|__________  -
- -             |         |   |                      | -}
-keyboardMouse rotX rotY pos key state modifiers position = do
-    keyboard rotX rotY pos key state
+{-                  mine                  opengl          -
+ -              ______|______     ___________|__________  -
+ -             |             |   |                      | -}
+keyboardMouse rotX rotY pos zoom key state modifiers position = do
+    keyboard rotX rotY pos zoom key state
     postRedisplay Nothing

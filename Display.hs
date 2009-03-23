@@ -21,16 +21,16 @@ idle = postRedisplay Nothing
 
 drawAxis = do
     renderPrimitive Lines $ do
-        preservingClientAttrib [AllClientAttributes] $ do
-            color $ Color3 1 0 (0::GLfloat)
-            vertex $ Vertex3 (-99999.0) 0 (0::GLfloat)
-            vertex $ Vertex3 (99999.0) 0 (0::GLfloat)
-            color $ Color3 0 1 (0::GLfloat)
-            vertex $ Vertex3 0 (-99999.0) (0::GLfloat)
-            vertex $ Vertex3 0 (99999.0) (0::GLfloat)
-            color $ Color3 0 0 (1::GLfloat)
-            vertex $ Vertex3 (0::GLfloat) 0 (-99999.0)
-            vertex $ Vertex3 (0::GLfloat) 0 (99999.0)
+        color $ Color3 1 0 (0::GLfloat)
+        vertex $ Vertex3 (-99999.0) 0 (0::GLfloat)
+        vertex $ Vertex3 (99999.0) 0 (0::GLfloat)
+        color $ Color3 0 1 (0::GLfloat)
+        vertex $ Vertex3 0 (-99999.0) (0::GLfloat)
+        vertex $ Vertex3 0 (99999.0) (0::GLfloat)
+        color $ Color3 0 0 (1::GLfloat)
+        vertex $ Vertex3 (0::GLfloat) 0 (-99999.0)
+        vertex $ Vertex3 (0::GLfloat) 0 (99999.0)
+        color $ Color3 1 1 (1::GLfloat)
 
 {- This function is responsible for the creation of the display matrix. As I
  - understand OpenGL, it's all about displaying a matrix. There's several
@@ -44,7 +44,8 @@ drawAxis = do
  - background. For that to work initialDisplayMode $= [DoubleBuffered] must be
  - set.
  -}
-display points rotX rotY pos = do
+
+display points rotX rotY pos zoom = do
     clear [ColorBuffer]
 
     loadIdentity
@@ -61,11 +62,14 @@ display points rotX rotY pos = do
     (x, y, z) <- get pos
     translate $ Vector3 x y z
 
-    mapM_ point points
+    zoom' <- get zoom
+    scale zoom' zoom' zoom'
+
+    renderPrimitive Points $ mapM_ point points
 
     drawAxis
 
     swapBuffers
 
     where
-        point (x, y, z) = renderPrimitive Points $ vertex $ Vertex3 x y z
+        point (x, y, z) = vertex $ Vertex3 x y z
