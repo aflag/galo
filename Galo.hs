@@ -14,12 +14,9 @@ module Galo (show3Dvec) where
  - OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  -}
 
-import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
-import Data.IORef
-import Display
-import UserInput
-import Control.Concurrent
+
+import MainIO
 
 
 show3Dvec :: (Double -> (Double, Double, Double)) -> [Double] -> IO ()
@@ -32,16 +29,12 @@ show3Dvec f range = do
 
     windowSize $= Size 800 600
 
-    rotX <- newIORef (0.0::GLfloat)
-    rotY <- newIORef (0.0::GLfloat)
-    pos <- newIORef (0.0::GLfloat, 0.0, 0.0)
-    zoom <- newIORef (1.0::GLfloat)
-
     clearColor $= Color4 0.5 0.6 (1.0::GLfloat) 0
 
-    displayCallback $= display (map f range) rotX rotY pos zoom
+    (display, keyboardMouse) <- initIO
+    displayCallback $= display (map f range)
+    keyboardMouseCallback $= Just keyboardMouse
 
-    keyboardMouseCallback $= Just (keyboardMouse rotX rotY pos zoom)
     actionOnWindowClose $= MainLoopReturns
 
     mainLoop
